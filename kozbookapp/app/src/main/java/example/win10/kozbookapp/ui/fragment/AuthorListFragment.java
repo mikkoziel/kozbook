@@ -10,18 +10,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 import androidx.fragment.app.FragmentTransaction;
 import example.win10.kozbookapp.R;
 import example.win10.kozbookapp.model.Author;
-import example.win10.kozbookapp.model.Book;
 import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
@@ -80,7 +76,7 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
     private LinearLayout createAuthorLL(int i){
         LinearLayout linearLayout = new LinearLayout(this.getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setBackgroundResource(R.drawable.custom_border);
+        linearLayout.setBackgroundResource(R.drawable.book_border);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         Author author = this.library.getAuthors().get(i);

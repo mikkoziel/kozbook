@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentTransaction;
 import example.win10.kozbookapp.R;
-import example.win10.kozbookapp.model.Author;
 import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
@@ -77,7 +76,7 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
     private LinearLayout createLocationLL(int i){
         LinearLayout linearLayout = new LinearLayout(this.getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setBackgroundResource(R.drawable.custom_border);
+        linearLayout.setBackgroundResource(R.drawable.book_border);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         Location loc = this.library.getLocations().get(i);

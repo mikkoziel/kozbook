@@ -11,4 +11,9 @@
     <string name="book_list">BOOK LIST</string>
     <string name="author_list">Author List</string>
     <string name="location_list">Location List</string>
+    <string name="filters">Filters</string>
+    <string name="delete">Delete</string>
+    <string name="filter">Filter</string>
+    <string name="authors">Authors:</string>
+    <string name="locations">Locations:</string>
 </resources>

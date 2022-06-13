@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import example.win10.kozbookapp.R;
 import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.model.User;
@@ -63,7 +61,7 @@ public class LibraryFragment extends Fragment {
 
                 LinearLayout linearLayout = new LinearLayout(this.getContext());
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                linearLayout.setBackgroundResource(R.drawable.custom_border);
+                linearLayout.setBackgroundResource(R.drawable.book_border);
 
                 TextView libName = new TextView(this.getContext());
                 libName.setText(lib.getName());
