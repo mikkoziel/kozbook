@@ -10,7 +10,7 @@ import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.model.User;
 
 public class LibraryViewModel extends ViewModel {
-    private MutableLiveData<Library> library;
+//    private MutableLiveData<Library> library;
     private MutableLiveData<User> user;
     
     private final MutableLiveData<Library> selectedLibrary = new MutableLiveData<>();
@@ -45,17 +45,17 @@ public class LibraryViewModel extends ViewModel {
 
 
 
-    public MutableLiveData<Library> getLibrary() {
-        return library;
-    }
-
-    public void setLibrary(MutableLiveData<Library> library) {
-        this.library = library;
-    }
-
-    public void setLibraryValue(Library library) {
-        this.library.setValue(library);
-    }
+//    public MutableLiveData<Library> getLibrary() {
+//        return library;
+//    }
+//
+//    public void setLibrary(MutableLiveData<Library> library) {
+//        this.library = library;
+//    }
+//
+//    public void setLibraryValue(Library library) {
+//        this.library.setValue(library);
+//    }
 
 
 
