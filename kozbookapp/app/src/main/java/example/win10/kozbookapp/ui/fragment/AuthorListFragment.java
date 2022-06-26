@@ -21,15 +21,12 @@ import example.win10.kozbookapp.model.Author;
 import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class AuthorListFragment extends Fragment implements View.OnClickListener {
+public class AuthorListFragment extends ListFragment implements View.OnClickListener {
 
-    private LibraryViewModel mViewModel;
     private GridLayout gridLayout;
-    private Library library;
 
     public AuthorListFragment(LibraryViewModel mViewModel){
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
     }
 
     public static AuthorListFragment newInstance(LibraryViewModel mViewModel) {
@@ -64,10 +61,9 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
 
 
     public void populateAuthors(){
-        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), p -> {
-            library = p;
+        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), library -> {
             this.gridLayout.removeAllViews();
-            for (int i = 0; i < this.library.getAuthors().size(); i++) {
+            for (int i = 0; i < library.getAuthors().size(); i++) {
                 this.gridLayout.addView(this.createAuthorLL(i), i);
             }
         });
@@ -79,7 +75,7 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
         linearLayout.setBackgroundResource(R.drawable.book_border);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        Author author = this.library.getAuthors().get(i);
+        Author author = this.mViewModel.getSelectedLibraryValue().getAuthors().get(i);
 
         TextView name = new TextView(this.getContext());
         name.setText(author.getName());
@@ -107,7 +103,7 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
     public boolean onLongClickAuthor(Author author, LinearLayout linearLayout){
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                this.library.removeAuthorFromLibrary(author);
+                this.mViewModel.getSelectedLibraryValue().removeAuthorFromLibrary(author);
                 this.gridLayout.removeView(linearLayout);
                 //Yes button clicked
             }
@@ -127,12 +123,6 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
     }
 
     public void onBackBtn(){
-        Fragment newFragment = new LibraryFragment(this.mViewModel);
-        FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        changeFragment(new LibraryFragment(this.mViewModel));
     }
 }
