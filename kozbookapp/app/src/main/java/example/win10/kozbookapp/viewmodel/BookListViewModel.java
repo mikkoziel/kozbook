@@ -20,19 +20,13 @@ public class BookListViewModel {
 
     }
 
-    public MutableLiveData<BookLayout> getChosenBook() {
-        return chosenBook;
-    }
-
-    public BookLayout getChosenBookValue() {
-        return chosenBook.getValue();
-    }
-
+    public MutableLiveData<BookLayout> getChosenBook() { return chosenBook; }
+    public BookLayout getChosenBookValue() { return chosenBook.getValue(); }
     public void postChosenBook(BookLayout bookLayout) { this.chosenBook.postValue(bookLayout);}
 
-    public MutableLiveData<List<Book>> getShowBooks() {
-        return showBooks;
-    }
+    public MutableLiveData<List<Book>> getShowBooks() { return showBooks; }
+    public List<Book> getShowBooksValue() { return showBooks.getValue(); }
+    public void postShowBooks(List<Book> books) { showBooks.postValue(books); }
 
     public List<Book> searchLibrary(String searchString, List<Book> booksToSearch){
         Predicate<Book> byName = book -> book.getName().toLowerCase(Locale.ROOT).contains(searchString);
