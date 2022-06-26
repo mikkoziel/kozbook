@@ -33,7 +33,6 @@ public class BookListViewModel {
         Predicate<Book> byAuthor = book -> book.getAuthor().getName().toLowerCase(Locale.ROOT).contains(searchString);
 
         return filterLibrary(byName.or(byAuthor), booksToSearch);
-
     }
 
     public List<Book> filterLibrary(Predicate<Book> predicate, List<Book> books) {
