@@ -1,7 +1,9 @@
 package example.win10.kozbookapp.model;
 
+import androidx.annotation.NonNull;
+
 public class Location {
-    private int location_id;
+    private Integer location_id;
     private String name;
     private String extra_info;
 
@@ -19,7 +21,7 @@ public class Location {
         this.extra_info = extra_info;
     }
 
-    public int getLocation_id() {
+    public Integer getLocation_id() {
         return location_id;
     }
 
@@ -41,5 +43,12 @@ public class Location {
 
     public void setExtra_info(String extra_info) {
         this.extra_info = extra_info;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if(getExtra_info() == null) return getName();
+        return getName() + ": " + getExtra_info();
     }
 }

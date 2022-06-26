@@ -1,7 +1,9 @@
 package example.win10.kozbookapp.model;
 
+import androidx.annotation.NonNull;
+
 public class Author {
-    private int author_id;
+    private Integer author_id;
     private String name;
 
     public Author(){
@@ -12,16 +14,16 @@ public class Author {
         this.name = name;
     }
 
-    public Author(int author_id, String name) {
+    public Author(Integer author_id, String name) {
         this.author_id = author_id;
         this.name = name;
     }
 
-    public int getAuthor_id() {
+    public Integer getAuthor_id() {
         return author_id;
     }
 
-    public void setAuthor_id(int author_id) {
+    public void setAuthor_id(Integer author_id) {
         this.author_id = author_id;
     }
 
@@ -31,5 +33,11 @@ public class Author {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }

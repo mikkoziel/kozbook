@@ -43,7 +43,7 @@ import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
 public class BookListFragment extends Fragment implements View.OnClickListener {
 
-    private LibraryViewModel mViewModel;
+    private final LibraryViewModel mViewModel;
 
     private GridLayout gridLayout;
     private LinearLayout bookOptions;
@@ -55,6 +55,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     private Library library;
 
     private final MutableLiveData<BookLayout> chosenBook = new MutableLiveData<>();
+    private final MutableLiveData<List<Book>> showBooks = new MutableLiveData<>();
     private int viewWidth;
 
     public BookListFragment(LibraryViewModel mViewModel) {
@@ -297,18 +298,18 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setFilterSpinners() {
-        List<String> authors = this.library.getAuthors().stream().map(Author::getName).collect(Collectors.toList());
-        authors.add(0, "None");
+        List<Author> authors = this.library.getAuthors();
+        authors.add(0, new Author(-1, "None"));
 
         this.authorFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String filterText = authors.get(i);
-                if (Objects.equals(filterText, "None")) {
+                int filterAuthorId = authors.get(i).getAuthor_id();
+                if (filterAuthorId == -1) {
                     setViews(library.getBooks());
                 } else {
 
-                    Predicate<Book> predicate = book -> book.getAuthor().getName().contains(filterText);
+                    Predicate<Book> predicate = book -> book.getAuthor().getAuthor_id().equals(filterAuthorId);
                     List<Book> books = filterLibrary(predicate);
                     setViews(books);
                 }
@@ -320,25 +321,23 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        ArrayAdapter<String> authorsAD = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, authors);
-        authorsAD.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.authorFilter.setAdapter(authorsAD);
+        ArrayAdapter<Author> authorsAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, authors);
+        authorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.authorFilter.setAdapter(authorsAdapter);
 
 
-        List<String> locations = this.library.getLocations().stream().map(loc -> loc.getName() + ";" + loc.getExtra_info()).collect(Collectors.toList());
-        locations.add(0, "None");
+        List<Location> locations = this.library.getLocations();
+        locations.add(0, new Location(-1, "None"));
 
         this.locationFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String filterText = locations.get(i);
-                if (Objects.equals(filterText, "None")) {
+                int filterLocationId = locations.get(i).getLocation_id();
+                if (filterLocationId == -1) {
                     setViews(library.getBooks());
                 } else {
-                    String[] locArr = filterText.split(";");
-                    Predicate<Book> predicate_0 = book -> book.getActiveLocation().getName().contains(locArr[0]);
-                    Predicate<Book> predicate_1 = book -> book.getActiveLocation().getExtra_info().contains(locArr[1]);
-                    List<Book> books = filterLibrary(predicate_0.and(predicate_1));
+                    Predicate<Book> predicate = book -> book.getActiveLocation().getLocation_id().equals(filterLocationId);
+                    List<Book> books = filterLibrary(predicate);
                     setViews(books);
                 }
 
@@ -350,9 +349,9 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        ArrayAdapter<String> locationAD = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, locations);
-        locationAD.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.locationFilter.setAdapter(locationAD);
+        ArrayAdapter<Location> locationAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, locations);
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.locationFilter.setAdapter(locationAdapter);
     }
 
     private List<Book> filterLibrary(Predicate<Book> predicate) {
