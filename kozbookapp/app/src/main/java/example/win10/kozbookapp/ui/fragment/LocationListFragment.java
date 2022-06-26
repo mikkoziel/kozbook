@@ -21,15 +21,12 @@ import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class LocationListFragment extends Fragment implements View.OnClickListener {
+public class LocationListFragment extends ListFragment implements View.OnClickListener {
 
-    private LibraryViewModel mViewModel;
     private GridLayout gridLayout;
-    private Library library;
 
     public LocationListFragment(LibraryViewModel mViewModel){
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
     }
 
    public static LocationListFragment newInstance(LibraryViewModel mViewModel) {
@@ -64,10 +61,9 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
 
 
     public void populateLocations(){
-        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), p -> {
-            library = p;
+        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), library -> {
             this.gridLayout.removeAllViews();
-            for (int i = 0; i < this.library.getLocations().size(); i++) {
+            for (int i = 0; i < library.getLocations().size(); i++) {
                 this.gridLayout.addView(this.createLocationLL(i), i);
             }
         });
@@ -79,7 +75,7 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
         linearLayout.setBackgroundResource(R.drawable.book_border);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        Location loc = this.library.getLocations().get(i);
+        Location loc = this.mViewModel.getSelectedLibraryValue().getLocations().get(i);
 
         TextView name = new TextView(this.getContext());
         name.setText(loc.getName());
@@ -105,7 +101,7 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
     public boolean onLongClickLoc(Location loc, LinearLayout linearLayout){
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                this.library.removeLocationFromLibrary(loc);
+                this.mViewModel.getSelectedLibraryValue().removeLocationFromLibrary(loc);
                 this.gridLayout.removeView(linearLayout);
                 //Yes button clicked
             }
@@ -124,12 +120,4 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private void changeFragment(Fragment newFragment){
-        FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-    }
 }

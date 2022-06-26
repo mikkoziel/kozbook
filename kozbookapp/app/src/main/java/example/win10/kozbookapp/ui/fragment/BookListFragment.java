@@ -36,15 +36,16 @@ import java.util.stream.Collectors;
 import example.win10.kozbookapp.R;
 import example.win10.kozbookapp.model.Author;
 import example.win10.kozbookapp.model.Book;
-import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.model.utils.BookLayout;
+import example.win10.kozbookapp.viewmodel.BookListViewModel;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class BookListFragment extends Fragment implements View.OnClickListener {
+public class BookListFragment extends ListFragment implements View.OnClickListener {
 
-    private final LibraryViewModel mViewModel;
+    private BookListViewModel bookListViewModel;
 
+    // Layout variables
     private GridLayout gridLayout;
     private LinearLayout bookOptions;
     private LinearLayout searchLayout;
@@ -52,15 +53,11 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     private Spinner authorFilter;
     private Spinner locationFilter;
 
-    private Library library;
-
-    private final MutableLiveData<BookLayout> chosenBook = new MutableLiveData<>();
-    private final MutableLiveData<List<Book>> showBooks = new MutableLiveData<>();
     private int viewWidth;
 
     public BookListFragment(LibraryViewModel mViewModel) {
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
+        this.bookListViewModel = new BookListViewModel();
     }
 
     public static BookListFragment newInstance(LibraryViewModel mViewModel) {
@@ -110,7 +107,6 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        mViewModel = new ViewModelProvider(this).get(BookListViewModel.class);
         final ViewTreeObserver vto = this.requireView().getViewTreeObserver();
         if (vto.isAlive()) {
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -125,10 +121,8 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void populateBooks() {
-        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), p -> {
-            this.library = p;
-            setViews(p.getBooks());
-
+        this.mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), library -> {
+            setViews(library.getBooks());
             this.setFilterSpinners();
         });
     }
@@ -145,7 +139,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     private LinearLayout createBookLL(int i, int size) {
-        Book book = this.library.getBooks().get(i);
+        Book book = this.mViewModel.getSelectedLibraryValue().getBooks().get(i);
 
         BookLayout bookLayout = new BookLayout(this.getContext(), book);
         bookLayout.setOrientation(LinearLayout.VERTICAL);
@@ -172,7 +166,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onClickBook(Book book) {
-        BookLayout bookLayout = this.chosenBook.getValue();
+        BookLayout bookLayout = this.bookListViewModel.getChosenBook().getValue();
         if (bookLayout == null) {
             this.postSelected(book);
 
@@ -213,22 +207,16 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onBackBtn() {
-        Fragment newFragment = new LibraryFragment(this.mViewModel);
-        FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        this.changeFragment(new LibraryFragment(this.mViewModel));
     }
 
     public void deleteBookBtn() {
-        BookLayout bookLayout = this.chosenBook.getValue();
+        BookLayout bookLayout = this.bookListViewModel.getChosenBook().getValue();
         assert bookLayout != null;
 
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                this.library.removeBookFromLibrary(bookLayout.getBook());
+                this.mViewModel.getSelectedLibraryValue().removeBookFromLibrary(bookLayout.getBook());
                 this.gridLayout.removeView(bookLayout);
                 this.unchoseBook();
                 //Yes button clicked
@@ -243,16 +231,16 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     public void choseBook(BookLayout bookLayout) {
         this.bookOptions.setVisibility(View.VISIBLE);
         bookLayout.setBackgroundResource(R.drawable.chosen_book_border);
-        this.chosenBook.postValue(bookLayout);
+        this.bookListViewModel.postChosenBook(bookLayout);
     }
 
     public void unchoseBook() {
         this.bookOptions.setVisibility(View.GONE);
 
-        BookLayout bookLayout = this.chosenBook.getValue();
+        BookLayout bookLayout = this.bookListViewModel.getChosenBookValue();
         if (bookLayout != null) {
             bookLayout.setBackgroundResource(R.drawable.book_border);
-            this.chosenBook.setValue(null);
+            this.bookListViewModel.postChosenBook(null);
         }
     }
 
@@ -260,16 +248,9 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
         EditText searchEditText = this.requireView().findViewById(R.id.searchText);
         String searchText = searchEditText.getText().toString().toLowerCase(Locale.ROOT);
         if (searchText.length() >= 3) {
-
-            Predicate<Book> byName = book -> book.getName().toLowerCase(Locale.ROOT).contains(searchText);
-            Predicate<Book> byAuthor = book -> book.getAuthor().getName().toLowerCase(Locale.ROOT).contains(searchText);
-
-            List<Book> books = this.filterLibrary(byName.or(byAuthor));
-//            List<Book> books = this.library.getBooks().parallelStream().filter((byName).or(byAuthor)).collect(Collectors.toList());
-
-            setViews(books);
+            setViews(this.bookListViewModel.searchLibrary(searchText, mViewModel.getSelectedLibraryValue().getBooks()));
         } else {
-            setViews(this.library.getBooks());
+            setViews(this.mViewModel.getSelectedLibraryValue().getBooks());
         }
 
     }
@@ -279,26 +260,18 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         if (id == R.id.app_bar_search) {
-            this.toggleVisibility(this.searchLayout);
+            this.bookListViewModel.toggleVisibility(this.searchLayout);
             return true;
         }
         if (id == R.id.app_bar_filter) {
-            this.toggleVisibility(this.filterLayout);
+            this.bookListViewModel.toggleVisibility(this.filterLayout);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void toggleVisibility(View view) {
-        if (view.getVisibility() == View.GONE) {
-            view.setVisibility(View.VISIBLE);
-        } else {
-            view.setVisibility(View.GONE);
-        }
-    }
-
     public void setFilterSpinners() {
-        List<Author> authors = this.library.getAuthors();
+        List<Author> authors = this.mViewModel.getSelectedLibraryValue().getAuthors();
         authors.add(0, new Author(-1, "None"));
 
         this.authorFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -306,18 +279,18 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int filterAuthorId = authors.get(i).getAuthor_id();
                 if (filterAuthorId == -1) {
-                    setViews(library.getBooks());
+                    setViews(mViewModel.getSelectedLibraryValue().getBooks());
                 } else {
 
                     Predicate<Book> predicate = book -> book.getAuthor().getAuthor_id().equals(filterAuthorId);
-                    List<Book> books = filterLibrary(predicate);
+                    List<Book> books = bookListViewModel.filterLibrary(predicate, mViewModel.getSelectedLibraryValue().getBooks());
                     setViews(books);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                setViews(library.getBooks());
+                setViews(mViewModel.getSelectedLibraryValue().getBooks());
             }
         });
 
@@ -326,7 +299,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
         this.authorFilter.setAdapter(authorsAdapter);
 
 
-        List<Location> locations = this.library.getLocations();
+        List<Location> locations = this.mViewModel.getSelectedLibraryValue().getLocations();
         locations.add(0, new Location(-1, "None"));
 
         this.locationFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -334,10 +307,10 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int filterLocationId = locations.get(i).getLocation_id();
                 if (filterLocationId == -1) {
-                    setViews(library.getBooks());
+                    setViews(mViewModel.getSelectedLibraryValue().getBooks());
                 } else {
                     Predicate<Book> predicate = book -> book.getActiveLocation().getLocation_id().equals(filterLocationId);
-                    List<Book> books = filterLibrary(predicate);
+                    List<Book> books = bookListViewModel.filterLibrary(predicate, mViewModel.getSelectedLibraryValue().getBooks());
                     setViews(books);
                 }
 
@@ -345,7 +318,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                setViews(library.getBooks());
+                setViews(mViewModel.getSelectedLibraryValue().getBooks());
             }
         });
 
@@ -354,7 +327,4 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
         this.locationFilter.setAdapter(locationAdapter);
     }
 
-    private List<Book> filterLibrary(Predicate<Book> predicate) {
-        return this.library.getBooks().stream().filter(predicate).collect(Collectors.toList());
-    }
 }

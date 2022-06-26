@@ -63,6 +63,8 @@ public class LibraryViewModel extends ViewModel {
         return selectedLibrary;
     }
 
+    public Library getSelectedLibraryValue() { return selectedLibrary.getValue(); }
+
     public void setSelectedLibrary(Library library){
         this.selectedLibrary.setValue(library);
     }
