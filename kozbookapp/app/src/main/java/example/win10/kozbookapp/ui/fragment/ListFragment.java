@@ -17,7 +17,7 @@ public class ListFragment extends Fragment {
     public static ListFragment newInstance(LibraryViewModel mViewModel) {
         return new ListFragment(mViewModel);
     }
-    
+
     protected void changeFragment(Fragment newFragment){
         FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
 
