@@ -281,7 +281,6 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
                 if (filterAuthorId == -1) {
                     setViews(mViewModel.getSelectedLibraryValue().getBooks());
                 } else {
-
                     Predicate<Book> predicate = book -> book.getAuthor().getAuthor_id().equals(filterAuthorId);
                     List<Book> books = bookListViewModel.filterLibrary(predicate, mViewModel.getSelectedLibraryValue().getBooks());
                     setViews(books);
@@ -298,7 +297,6 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
         authorsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.authorFilter.setAdapter(authorsAdapter);
 
-
         List<Location> locations = this.mViewModel.getSelectedLibraryValue().getLocations();
         locations.add(0, new Location(-1, "None"));
 
@@ -313,7 +311,6 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
                     List<Book> books = bookListViewModel.filterLibrary(predicate, mViewModel.getSelectedLibraryValue().getBooks());
                     setViews(books);
                 }
-
             }
 
             @Override
