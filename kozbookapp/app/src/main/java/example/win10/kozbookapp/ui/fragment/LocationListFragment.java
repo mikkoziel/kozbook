@@ -21,15 +21,15 @@ import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class LocationListFragment extends Fragment implements View.OnClickListener {
+public class LocationListFragment extends ListFragment implements View.OnClickListener {
 
-    private LibraryViewModel mViewModel;
+//    private LibraryViewModel mViewModel;
     private GridLayout gridLayout;
     private Library library;
 
     public LocationListFragment(LibraryViewModel mViewModel){
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
+//        this.mViewModel = mViewModel;
     }
 
    public static LocationListFragment newInstance(LibraryViewModel mViewModel) {
@@ -124,12 +124,4 @@ public class LocationListFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private void changeFragment(Fragment newFragment){
-        FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-    }
 }

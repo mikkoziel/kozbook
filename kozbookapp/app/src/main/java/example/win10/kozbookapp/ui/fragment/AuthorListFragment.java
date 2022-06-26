@@ -21,15 +21,15 @@ import example.win10.kozbookapp.model.Author;
 import example.win10.kozbookapp.model.Library;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class AuthorListFragment extends Fragment implements View.OnClickListener {
+public class AuthorListFragment extends ListFragment implements View.OnClickListener {
 
-    private LibraryViewModel mViewModel;
+//    private LibraryViewModel mViewModel;
     private GridLayout gridLayout;
     private Library library;
 
     public AuthorListFragment(LibraryViewModel mViewModel){
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
+//        this.mViewModel = mViewModel;
     }
 
     public static AuthorListFragment newInstance(LibraryViewModel mViewModel) {
@@ -127,12 +127,6 @@ public class AuthorListFragment extends Fragment implements View.OnClickListener
     }
 
     public void onBackBtn(){
-        Fragment newFragment = new LibraryFragment(this.mViewModel);
-        FragmentTransaction transaction = this.requireActivity().getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        changeFragment(new LibraryFragment(this.mViewModel));
     }
 }

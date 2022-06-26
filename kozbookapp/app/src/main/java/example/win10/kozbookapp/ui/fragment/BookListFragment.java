@@ -41,9 +41,9 @@ import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.model.utils.BookLayout;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class BookListFragment extends Fragment implements View.OnClickListener {
+public class BookListFragment extends ListFragment implements View.OnClickListener {
 
-    private final LibraryViewModel mViewModel;
+//    private final LibraryViewModel mViewModel;
 
     private GridLayout gridLayout;
     private LinearLayout bookOptions;
@@ -59,8 +59,8 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     private int viewWidth;
 
     public BookListFragment(LibraryViewModel mViewModel) {
-        super();
-        this.mViewModel = mViewModel;
+        super(mViewModel);
+//        this.mViewModel = mViewModel;
     }
 
     public static BookListFragment newInstance(LibraryViewModel mViewModel) {
@@ -125,7 +125,7 @@ public class BookListFragment extends Fragment implements View.OnClickListener {
     }
 
     public void populateBooks() {
-        mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), p -> {
+        this.mViewModel.getSelectedLibrary().observe(getViewLifecycleOwner(), p -> {
             this.library = p;
             setViews(p.getBooks());
 
