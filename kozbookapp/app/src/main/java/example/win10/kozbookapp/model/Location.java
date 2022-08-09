@@ -15,6 +15,11 @@ public class Location {
         this.name = name;
     }
 
+    public Location(String name, String extra_info) {
+        this.name = name;
+        this.extra_info = extra_info;
+    }
+
     public Location(int location_id, String name, String extra_info) {
         this.location_id = location_id;
         this.name = name;

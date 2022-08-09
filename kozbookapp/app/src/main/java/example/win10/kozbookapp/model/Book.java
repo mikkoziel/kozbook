@@ -17,6 +17,12 @@ public class Book {
         this.author = author;
     }
 
+    public Book(String name, Author author, List<Location> locations) {
+        this.name = name;
+        this.author = author;
+        this.locations = locations;
+    }
+
     public Book(int book_id, String name, Author author) {
         this.book_id = book_id;
         this.name = name;

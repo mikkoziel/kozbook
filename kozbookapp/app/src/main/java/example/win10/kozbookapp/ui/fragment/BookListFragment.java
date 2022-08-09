@@ -38,10 +38,11 @@ import example.win10.kozbookapp.model.Author;
 import example.win10.kozbookapp.model.Book;
 import example.win10.kozbookapp.model.Location;
 import example.win10.kozbookapp.model.utils.BookLayout;
+import example.win10.kozbookapp.ui.dialog.AddBookDialog;
 import example.win10.kozbookapp.viewmodel.BookListViewModel;
 import example.win10.kozbookapp.viewmodel.LibraryViewModel;
 
-public class BookListFragment extends ListFragment implements View.OnClickListener {
+public class BookListFragment extends ListFragment implements View.OnClickListener, AddBookDialog.AddBookDialogListener {
 
     private BookListViewModel bookListViewModel;
 
@@ -249,7 +250,6 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
         } else {
             setViews(this.mViewModel.getSelectedLibraryValue().getBooks());
         }
-
     }
 
     @Override
@@ -322,7 +322,13 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
     }
 
     private void addBook(){
-
+        AddBookDialog dialog = AddBookDialog.newInstance(this.mViewModel.getSelectedLibrary().getValue());
+        dialog.setTargetFragment(BookListFragment.this, 300);
+        dialog.show(this.requireActivity().getSupportFragmentManager(), "dialog");
     }
 
+    @Override
+    public void onFinishAddBookDialog(Book book) {
+//        this.mViewModel.addNewProfile(profile, this.getContext());
+    }
 }
