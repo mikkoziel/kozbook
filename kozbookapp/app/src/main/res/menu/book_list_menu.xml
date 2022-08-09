@@ -9,10 +9,17 @@
         android:iconifiedByDefault="true"/>
 
     <item
-        android:id="@+id/app_bar_filter"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        android:title="@string/filter"
+        android:id="@+id/app_bar_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/add"
         app:showAsAction="ifRoom"
         android:iconifiedByDefault="true"/>
+
+<!--    <item-->
+<!--        android:id="@+id/app_bar_filter"-->
+<!--        android:icon="@android:drawable/ic_menu_sort_alphabetically"-->
+<!--        android:title="@string/filter"-->
+<!--        app:showAsAction="ifRoom"-->
+<!--        android:iconifiedByDefault="true"/>-->
 
 </menu>

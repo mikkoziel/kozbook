@@ -1,5 +1,6 @@
 package example.win10.kozbookapp.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class BookFragment extends Fragment implements View.OnClickListener {
     private LinearLayout bookBarLayout;
     private TextView nameText;
     private TextView authorText;
-    private ImageView bookCover;
+//    private ImageView bookCover;
     private TableLayout locationTable;
     private TableLayout accessTable;
 
@@ -63,13 +64,13 @@ public class BookFragment extends Fragment implements View.OnClickListener {
         this.bookBarLayout = v.findViewById(R.id.infoBarLayout);
         this.nameText = v.findViewById(R.id.bookName);
         this.authorText = v.findViewById(R.id.authorName);
-        this.bookCover = v.findViewById(R.id.coverView);
+//        this.bookCover = v.findViewById(R.id.coverView);
 
         this.locationTable = v.findViewById(R.id.locationTable);
         this.accessTable = v.findViewById(R.id.accessTable);
 
-        Button b = v.findViewById(R.id.backBtn);
-        b.setOnClickListener(this);
+//        Button b = v.findViewById(R.id.backBtn);
+//        b.setOnClickListener(this);
 
         return v;
     }
@@ -109,17 +110,22 @@ public class BookFragment extends Fragment implements View.OnClickListener {
             this.changeFragment(new AuthorFragment(this.mViewModel));
         });
 
-        this.bookCover.setLayoutParams(new LinearLayout.LayoutParams(viewWidth/2, viewWidth/2));
+//        this.bookCover.setLayoutParams(new LinearLayout.LayoutParams(viewWidth/2, viewWidth/2));
 
-        Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.no_cover, null);
-        this.bookCover.setImageDrawable(myDrawable);
+//        Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.no_cover, null);
+//        this.bookCover.setImageDrawable(myDrawable);
     }
 
+    @SuppressLint("ResourceAsColor")
     private void populateLocationTable(){
         this.locationTable.removeAllViews();
         for(int i=0; i<this.book.getLocations().size();i++) {
             Location loc = this.book.getLocations().get(i);
             TableRow tr_head = this.addLocationTableRow(loc, i);
+
+            if(i==0){
+                tr_head.setBackgroundColor(R.color.latest);
+            }
 
             this.locationTable.addView(tr_head, new TableLayout.LayoutParams(
                     TableLayout.LayoutParams.MATCH_PARENT,

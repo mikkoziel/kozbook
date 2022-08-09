@@ -16,4 +16,7 @@
     <string name="filter">Filter</string>
     <string name="authors">Authors</string>
     <string name="locations">Locations</string>
+    <string name="location_history">Location History</string>
+    <string name="access_history">Access History</string>
+    <string name="add">Add</string>
 </resources>

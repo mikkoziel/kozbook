@@ -48,7 +48,6 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
     // Layout variables
     private GridLayout gridLayout;
     private LinearLayout bookOptions;
-    private LinearLayout searchLayout;
     private LinearLayout filterLayout;
     private Spinner authorFilter;
     private Spinner locationFilter;
@@ -71,17 +70,15 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
 
         this.gridLayout = v.findViewById(R.id.booksGrid);
         this.bookOptions = v.findViewById(R.id.bookOptions);
-        this.searchLayout = v.findViewById(R.id.searchBar);
         this.filterLayout = v.findViewById(R.id.filterLayout);
 
         this.filterLayout.setVisibility(View.GONE);
-        this.searchLayout.setVisibility(View.GONE);
 
         this.authorFilter = v.findViewById(R.id.authorsFilterSpinner);
         this.locationFilter = v.findViewById(R.id.locationFilterSpinner);
 
-        Button backBtn = v.findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(this);
+//        Button backBtn = v.findViewById(R.id.backBtn);
+//        backBtn.setOnClickListener(this);
         Button deleteBtn = v.findViewById(R.id.deleteBtn);
         deleteBtn.setOnClickListener(this);
         Button searchBtn = v.findViewById(R.id.searchBttn);
@@ -195,9 +192,9 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.backBtn) {
-            this.onBackBtn();
-        }
+//        if (view.getId() == R.id.backBtn) {
+//            this.onBackBtn();
+//        }
         if (view.getId() == R.id.deleteBtn) {
             this.deleteBookBtn();
         }
@@ -206,9 +203,9 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
         }
     }
 
-    public void onBackBtn() {
-        this.changeFragment(new LibraryFragment(this.mViewModel));
-    }
+//    public void onBackBtn() {
+//        this.changeFragment(new LibraryFragment(this.mViewModel));
+//    }
 
     public void deleteBookBtn() {
         BookLayout bookLayout = this.bookListViewModel.getChosenBook().getValue();
@@ -260,11 +257,11 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
         int id = item.getItemId();
 
         if (id == R.id.app_bar_search) {
-            this.bookListViewModel.toggleVisibility(this.searchLayout);
+            this.bookListViewModel.toggleVisibility(this.filterLayout);
             return true;
         }
-        if (id == R.id.app_bar_filter) {
-            this.bookListViewModel.toggleVisibility(this.filterLayout);
+        if (id == R.id.app_bar_add) {
+            this.addBook();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -322,6 +319,10 @@ public class BookListFragment extends ListFragment implements View.OnClickListen
         ArrayAdapter<Location> locationAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, locations);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.locationFilter.setAdapter(locationAdapter);
+    }
+
+    private void addBook(){
+
     }
 
 }

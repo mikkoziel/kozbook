@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="no_cover">#7A7A7A</color>
     <color name="pressed">#072663</color>
+    <color name="latest">#001D57</color>
 </resources>
